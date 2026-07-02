@@ -1,0 +1,18 @@
+<div id="<%= dom_id(task) %>" class="flex flex-col gap-y-2">
+  <%= render "errors", task: task %>
+
+  <div class="flex gap-x-8">
+    <h2 class="text-lg font-semibold shrink-0"><%= task.title %></h2>
+    <%= form_with model: task, url: task_path(task), method: :patch,
+          data: { controller: "auto-submit" } do |form| %>
+      <%= form.check_box :complete, data: { action: "change->auto-submit#submit" } %>
+      <%= form.label :complete, task.complete? ? "Complete" : "Incomplete" %>
+    <% end %>
+    <div class="italic"><%= task.description&.truncate(50) %></div>
+    <div><%= task.assignee&.name || "Unassigned" %></div>
+    <div class="flex gap-x-2">
+      <%= link_to "Edit", edit_task_path(task) %>
+      <%= link_to "Delete", task_path(task), data: { turbo_method: "delete" } %>
+    </div>
+  </div>
+</div>
