@@ -19,4 +19,10 @@ RSpec.describe Task, type: :model do
     user = create(:user)
     expect(build(:task, assignee: user).assignee).to eq(user)
   end
+
+  it "rejects an assignee_id that does not belong to a real user" do
+    task = build(:task, assignee_id: User.maximum(:id).to_i + 1)
+    expect(task).not_to be_valid
+    expect(task.errors[:assignee]).to include("must exist")
+  end
 end

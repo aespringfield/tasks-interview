@@ -49,6 +49,15 @@ RSpec.describe "Tasks", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("can&#39;t be blank")
     end
+
+    it "re-renders the form with errors when assignee_id does not exist" do
+      expect {
+        post tasks_path, params: {task: {title: "Write proposal", assignee_id: User.maximum(:id).to_i + 1}}
+      }.not_to change(Task, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("must exist")
+    end
   end
 
   describe "PATCH /tasks/:id" do
