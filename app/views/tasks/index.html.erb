@@ -6,4 +6,4 @@
 
 <hr class="my-8" />
 
-<%= render "task_form", task: (@task && @task.new_record? ? @task : Task.new) %>
+<%= render "task_form", task: @task || Task.new %>

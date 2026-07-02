@@ -58,25 +58,11 @@ class TasksController < ApplicationController
 
   def destroy
     @task = Task.find(params[:id])
+    @task.destroy
 
-    if @task.destroy
-      respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.remove(@task) }
-        format.html { redirect_to tasks_path }
-      end
-    else
-      @task.errors.add(:base, "could not be deleted")
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(@task, partial: "task", locals: {task: @task}),
-            status: :unprocessable_content
-        end
-        format.html do
-          @tasks = Task.all.includes(:assignee).to_a
-          @tasks[@tasks.find_index { |t| t.id == @task.id }] = @task
-          render :index, status: :unprocessable_content
-        end
-      end
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@task) }
+      format.html { redirect_to tasks_path }
     end
   end
 
